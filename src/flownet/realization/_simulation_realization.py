@@ -136,6 +136,7 @@ class SimulationRealization:
                 "max_connections": self._schedule.max_connections(),
             },
             "schedule": self._schedule,
+            "timedelta": datetime.timedelta,
             "sections_with_include": list(self._includes.keys()),
             "dims": self._dims,
             "pred_schedule_file": self._pred_schedule_file,

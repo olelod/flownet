@@ -1,7 +1,8 @@
 {%- for date in schedule.get_dates() %}
 {%- if date > startdate: %}
+{%- set sh_date = date - timedelta(seconds=1) %}
 DATES
- {{ date.strftime('%d %b %Y').upper() }} /
+ {{ sh_date.strftime('%d %b %Y %H:%M:%S').upper() }} /
 /
 {%- endif %}
 {%- if schedule.get_keywords(dates=date, kw_class="WELSPECS"): %}
