@@ -97,7 +97,7 @@ class SimulationRealization:
                 the given time shifted to one second
             """
 
-            return (value - datetime.datetime(seconds=1))
+            return (value - datetime.datetime(0,0,0,0,0,1))
 
         template_environment = jinja2.Environment(
             loader=jinja2.PackageLoader("flownet", "templates"),
