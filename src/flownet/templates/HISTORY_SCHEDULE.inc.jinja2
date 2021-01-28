@@ -1,6 +1,6 @@
 {%- for date in schedule.get_dates() %}
 {%- if date > startdate: %}
-{%- set sh_date = date - timedelta(seconds=1) %}
+{%- set sh_date = date - datetime.timedelta(seconds=-1) %}
 DATES
  {{ sh_date.strftime('%d %b %Y %H:%M:%S').upper() }} /
 /
