@@ -104,7 +104,7 @@ class SimulationRealization:
             undefined=jinja2.StrictUndefined,
         )
         template_environment.filters["isnan"] = isnan
-        template_environment.filters["timedelta"] = shiftdate
+        template_environment.filters["shiftdate"] = shiftdate
 
         # Create output folders if they don't exist
         output_folder_path = pathlib.Path(output_folder)
