@@ -86,18 +86,22 @@ class SimulationRealization:
                 return 0
             return value
 
-        def shiftdate(value: datetime.date) -> datetime.date:
+        def shiftdate(value: datetime.date) -> datetime.datetime:
             """
             Helper function that subtracts one second from a give date
 
             Args:
                 value: a time
-            
+
             Returns:
                 the given time shifted to one second
             """
 
-            return (value - datetime.datetime(0,0,0,0,0,1))
+            datetime.datetime.combine(value, datetime.time(0, 0, 0))
+
+            return datetime.datetime.combine(
+                value, datetime.time(0, 0, 0)
+            ) - datetime.timedelta(0, 1)
 
         template_environment = jinja2.Environment(
             loader=jinja2.PackageLoader("flownet", "templates"),
