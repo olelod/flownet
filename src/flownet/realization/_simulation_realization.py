@@ -86,11 +86,25 @@ class SimulationRealization:
                 return 0
             return value
 
+        def shiftdate(value: datetime.date) -> datetime.date:
+            """
+            Helper function that subtracts one second from a give date
+
+            Args:
+                value: a time
+            
+            Returns:
+                the given time shifted to one second
+            """
+
+            return (value - datetime.datetime(seconds=1))
+
         template_environment = jinja2.Environment(
             loader=jinja2.PackageLoader("flownet", "templates"),
             undefined=jinja2.StrictUndefined,
         )
         template_environment.filters["isnan"] = isnan
+        template_environment.filters["timedelta"] = shiftdate
 
         # Create output folders if they don't exist
         output_folder_path = pathlib.Path(output_folder)
