@@ -25,6 +25,27 @@ def create_schema(_to_abs_path) -> Dict:
         MK.Type: types.NamedDict,
         MK.Content: {
             "name": {MK.Type: types.String},
+            "flownet": {
+                MK.Type: types.NamedDict,
+                MK.AllowNone: True,
+                MK.Content: {
+                    "data_source": {
+                        MK.Type: types.NamedDict,
+                        MK.Content: {
+                            "simulation": {
+                                MK.Type: types.NamedDict,
+                                MK.Content: {
+                                    "input_case": {
+                                        MK.Type: types.String,
+                                        MK.Transformation: _to_abs_path,
+                                        MK.Description: "Simulation input case to be used as data source for FlowNet",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
             "ert": {
                 MK.Type: types.NamedDict,
                 MK.Content: {
@@ -68,6 +89,35 @@ def create_schema(_to_abs_path) -> Dict:
                             "name": {MK.Type: types.String},
                             "server": {MK.Type: types.String, MK.AllowNone: True},
                             "max_running": {MK.Type: types.Integer},
+                        },
+                    },
+                    "analysis": {
+                        MK.Type: types.NamedDict,
+                        MK.Content: {
+                            "metric": {
+                                MK.Type: types.List,
+                                MK.Content: {
+                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                },
+                                MK.Transformation: _to_upper,
+                                MK.Description: "List of accuracy metrics to be computed "
+                                "in FlowNet analysis workflow",
+                            },
+                            "quantity": {
+                                MK.Type: types.List,
+                                MK.Content: {
+                                    MK.Item: {MK.Type: types.String, MK.AllowNone: True}
+                                },
+                                MK.Transformation: _to_upper,
+                                MK.Description: "List of summary vectors for which accuracy "
+                                "is to be computed",
+                            },
+                            "start": {MK.Type: types.Date, MK.AllowNone: True},
+                            "end": {MK.Type: types.Date, MK.AllowNone: True},
+                            "outfile": {
+                                MK.Type: types.String,
+                                MK.AllowNone: True,
+                            },
                         },
                     },
                 },
@@ -139,4 +189,11 @@ def parse_pred_config(
             "Queue name and server needs to be provided if system is not 'LOCAL'."
         )
 
+    if hasattr(config,"flownet"):
+        if not hasattr(config.data_source.simulation,"input_case"):
+            raise ValueError(
+                "The 'flownet' keyword in the config yaml should only be used to "
+                "define a simulation reference case. The simulation input case is missing."
+            )
+                if hasattr(config.ert,"analysis") and not (hasattr(config,"flownet"))
     return config

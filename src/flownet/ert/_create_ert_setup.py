@@ -179,8 +179,10 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
     output_folder = pathlib.Path(args.output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    if not prediction_setup:
+    if not prediction_setup or hasattr(config.ert, "analysis"):
         # Derive absolute path to reference simulation case
+        # This is also needed in prediction setup if analysis
+        # metric is included in config yaml
         if config.flownet.data_source.simulation.input_case:
             path_ref_sim = pathlib.Path(
                 config.flownet.data_source.simulation.input_case
