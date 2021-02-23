@@ -227,6 +227,13 @@ def create_ert_setup(  # pylint: disable=too-many-arguments
         "analysis_quantity": analysis_quantity,
     }
 
+    if prediction_setup and hasattr(config.ert,"analysis"):
+       configuration.update(
+            {
+                "reference_simulation": path_ref_sim,
+                "perforation_strategy": config.flownet.perforation_handling_strategy,
+            }
+        )        
     if not prediction_setup:
         configuration.update(
             {

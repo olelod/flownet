@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Dict
+from typing import Dict, Union, List
 
 import yaml
 import configsuite
@@ -21,13 +21,20 @@ def create_schema(_to_abs_path) -> Dict:
         Dictionary to be used as configsuite type schema
 
     """
+
+    @configsuite.transformation_msg("Convert string to upper case")
+    def _to_upper(input_data: Union[List[str], str]) -> Union[List[str], str]:
+        if isinstance(input_data, str):
+            return input_data.upper()
+
+        return [x.upper() for x in input_data]
+
     return {
         MK.Type: types.NamedDict,
         MK.Content: {
             "name": {MK.Type: types.String},
             "flownet": {
                 MK.Type: types.NamedDict,
-                MK.AllowNone: True,
                 MK.Content: {
                     "data_source": {
                         MK.Type: types.NamedDict,
@@ -38,11 +45,19 @@ def create_schema(_to_abs_path) -> Dict:
                                     "input_case": {
                                         MK.Type: types.String,
                                         MK.Transformation: _to_abs_path,
+                                        MK.AllowNone: True,
                                         MK.Description: "Simulation input case to be used as data source for FlowNet",
                                     },
                                 },
                             },
                         },
+                    },
+                    "perforation_handling_strategy": {
+                        MK.Type: types.String,
+                        MK.Default: "bottom_point",
+                        MK.Description: "Strategy to be used when creating perforations. Valid options are "
+                        "'bottom'_point', 'top_point', 'multiple', 'time_avg_open_location' and "
+                        "'multiple_based_on_workovers'.",
                     },
                 },
             },
@@ -190,10 +205,13 @@ def parse_pred_config(
         )
 
     if hasattr(config,"flownet"):
-        if not hasattr(config.data_source.simulation,"input_case"):
+        if not hasattr(config.flownet.data_source.simulation,"input_case"):
             raise ValueError(
                 "The 'flownet' keyword in the config yaml should only be used to "
                 "define a simulation reference case. The simulation input case is missing."
             )
-                if hasattr(config.ert,"analysis") and not (hasattr(config,"flownet"))
+    if hasattr(config.ert,"analysis") and not (hasattr(config,"flownet")):
+        raise ValueError(
+            ""
+            )
     return config
